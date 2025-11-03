@@ -6,6 +6,7 @@
         <input type="text" name="host" placeholder="host">
         <input type="text" name="dbuser" placeholder="username">
         <input type="text" name="dbpass" placeholder="password">
+        <input type="text" name="dbname" placeholder="database">
         <p>Admin creation</p>
         <input type="text" name="admin" placeholder="username">
         <input type="text" name="password" placeholder="password">

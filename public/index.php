@@ -1,4 +1,3 @@
 <?php include("templates/header.php"); ?>
     Welcome
-<?php include("templates/header.php"); ?>
-
+<?php include("templates/footer.php"); ?>
