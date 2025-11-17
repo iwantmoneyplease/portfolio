@@ -1,94 +1,101 @@
 <?php
-
     $conn = mysqli_connect($_POST["host"], $_POST["dbuser"], $_POST["dbpass"]);
-    if(!$conn) 
-    {
-        displayMsg("error", "Wrong password for database");
+    if(!$conn) {
+        displayMsg("error", "Wrong passowrd for database");
         exit();
-    }
-    else
-    {
-        $sql = "CREATE DATABASE " . $_POST["dbname"];
-        try
-        {
+    } else {
+
+        $sql = "CREATE DATABASE IF NOT EXISTS " . $_POST["dbname"];
+        try {
             $conn->query($sql);
             displayMsg("success", "Database created successfully");
-        }
-        catch(mysqli_sql_exception $e)
-        {
+        } catch(mysqli_sql_exception $e){
             displayMsg("error", "Database already exists");
         }
+
     }
     $conn->close();
     $conn = mysqli_connect($_POST["host"], $_POST["dbuser"], $_POST["dbpass"], $_POST["dbname"]);
-
-    if(!$conn)
-    {
-        displayMsg("error", "Wrong password for database");
+    if(!$conn) {
+        displayMsg("error", "Wrong passowrd for database");
         exit();
-    }
-    else
-    {
-        displayMsg("success", "make more tables NOW");
+    } else {
+        displayMsg("success", "make tabels plz");
 
-        $sql = "CREATE TABLE IF NOT EXISTS project(
-            project_id INT AUTO_INCREMENT PRIMARY KEY,
-            project_name VARCHAR(100) NOT NULL,
-            project_info VARCHAR(500) NOT NULL,
-            project_link VARCHAR(100),
-            project_thumbnail VARCHAR(100)
-            ) CHARSET=utf8mb4";
-        $createProject = $conn->query($sql);
+        include_once("../../template/maketable.php");
 
-        $sql = "CREATE TABLE IF NOT EXISTS images(
-            image_id INT AUTO_INCREMENT PRIMARY KEY,
-            project_id INT NOT NULL,
-            images_url VARCHAR(100) NOT NULL
-            ) CHARSET=utf8mb4";
-        $createImages = $conn->query($sql);
+        $stmt = $conn->prepare("
+            INSERT INTO info (name, url, telefon, email, discord, about, image, welcome)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-        $sql = "CREATE TABLE IF NOT EXISTS categories(
-            cat_id INT AUTO_INCREMENT PRIMARY KEY,
-            cat_name VARCHAR(100) NOT NULL
-            ) CHARSET=utf8mb4";
-        $createCategories = $conn->query($sql);
+        $name = "Namn på sidan";
+        $url = $_SERVER["HTTP_HOST"];
+        $telefon = "070 111 22 33";
+        $email = "viktortesterberg@test.ga.lbtest.teste";
+        $discord = "";
+        $about = "Om text";
+        $image = "";
+        $welcome = "Kort underrubrik";
 
-        $sql = "CREATE TABLE IF NOT EXISTS cat_relations(
-            cat_id INT NOT NULL,
-            project_id INT NOT NULL
-            ) CHARSET=utf8mb4";
-        $createRelations = $conn->query($sql);
+        $stmt->bind_param("ssssssss", $name, $url, $telefon, $email, $discord, $about, $image, $welcome);
 
-        $sql = "CREATE TABLE IF NOT EXISTS Info(
-            person_name VARCHAR(50) NOT NULL,
-            person_phone VARCHAR(50),
-            person_mail VARCHAR(100),
-            person_discord VARCHAR(100),
-            person_about VARCHAR(500),
-            person_image VARCHAR(100),
-            person_welcome VARCHAR(500)
-            ) CHARSET=utf8mb4";
-        $createInfo = $conn->query($sql);
+        if ($stmt->execute()) {
+            displayMsg("success", "Data tillagd i info. Uppdatera sen");
+        } else {
+            displayMsg("error", "Kunde inte lägga till info");
+        }
 
-        $sql = "CREATE TABLE IF NOT EXISTS Users(
-            login_username VARCHAR(100),
-            login_password VARCHAR(100),
-            login_role VARCHAR(100)
-            ) CHARSET=utf8mb4";
-        $createUsers = $conn->query($sql);
+        $stmt = $conn->prepare("
+            INSERT INTO users (username, password, role)
+            VALUES (?, ?, ?)
+        ");
+
+        $user = $_POST["admin"];
+        $pass = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        $role = "admin";
+
+        $stmt->bind_param("sss", $user, $pass, $role);
+
+        if ($stmt->execute()) {
+            displayMsg("success", "Användare tillagd.");
+        } else {
+            displayMsg("error", "Kunde inte lägga till användare");
+        }
+        makeEnv();
 
     }
-    $conn->close();
-    $conn = mysqli_connect($_POST["host"], $_POST["dbuser"], $_POST["dbpass"], $_POST["dbname"]);
 
+    function makeTabel($conn, $sql, $name) {
+        try {
+            $conn->query($sql);
+            displayMsg("success", "Tabel " . $name . " created successfully");
+        } catch(mysqli_sql_exception $e){
+            displayMsg("error",  $name . " already exists");
+        }
+    }
 
-    /**
-     * Här vill jag att ni fortsätter, ni ska
-     * 1. Skapa en databas.
-     * 2. Skapa tabeller
-     * 3. Lägga in eventuell dummy data som behövs direkt
-     * 4. Skapa en användare i users-tabellen
-     * 4. Skapa en .env som vi använder i fortsättningen.
-     * https://www.w3schools.com/php/php_mysql_create_table.asp
-     */
+    function makeEnv(){
+        $env = [
+            'DB_HOST' => $_POST["host"],
+            'DB_PORT' => '3306',
+            'DB_DATABASE' => $_POST["dbname"],
+            'DB_USER' => $_POST["dbuser"],
+            'DB_PASSWORD' => $_POST["dbpass"],
+        ];
+        $content = "";
+        foreach ($env as $key => $value) {
+            $content .= "{$key}={$value}\n";
+        }
+
+        $file = __DIR__ . '/.env';
+        if (file_put_contents($file, $content)) {
+            displayMsg("success", "All done");
+        } else {
+            echo "Något knas";
+        }
+
+        echo '<a href="/"> Gå tillbaka</a>';
+    }
 ?>
+
