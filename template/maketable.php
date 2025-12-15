@@ -1,9 +1,9 @@
 <?php
     $sql = "CREATE TABLE project (
         project_id INT AUTO_INCREMENT PRIMARY KEY,
-        namn VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL,
         info VARCHAR(500),
-        external_link VARCHAR(100),
+        url VARCHAR(100),
         thumbnail VARCHAR(100)
     );";
     makeTabel($conn, $sql, "project");
@@ -34,7 +34,7 @@
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100),
         url VARCHAR(50),
-        telefon VARCHAR(50),
+        telephone VARCHAR(50),
         email VARCHAR(50),
         discord VARCHAR(50),
         about VARCHAR(500),

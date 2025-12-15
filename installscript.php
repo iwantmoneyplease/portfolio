@@ -20,18 +20,18 @@
         displayMsg("error", "Wrong passowrd for database");
         exit();
     } else {
-        displayMsg("success", "make tabels plz");
+        displayMsg("success", "MAKE TABLES!!!");
 
         include_once("../../template/maketable.php");
 
         $stmt = $conn->prepare("
-            INSERT INTO info (name, url, telefon, email, discord, about, image, welcome)
+            INSERT INTO info (name, url, telephone, email, discord, about, image, welcome)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        $name = "Namn på sidan";
+        $name = "namn på sidan";
         $url = $_SERVER["HTTP_HOST"];
-        $telefon = "070 111 22 33";
+        $telephone = "070 111 22 33";
         $email = "viktortesterberg@test.ga.lbtest.teste";
         $discord = "";
         $about = "Om text";
@@ -95,7 +95,7 @@
             echo "Något knas";
         }
 
-        echo '<a href="/"> Gå tillbaka</a>';
+        echo '<a href="/dashboard/index.php""> Gå tillbaka</a>';
     }
 ?>
 
