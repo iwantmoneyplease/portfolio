@@ -22,7 +22,7 @@
     } else {
         displayMsg("success", "MAKE TABLES!!!");
 
-        include_once("../../template/maketable.php");
+        include_once("../../prefabs/maketable.php");
 
         $stmt = $conn->prepare("
             INSERT INTO info (name, url, telephone, email, discord, about, image, welcome)

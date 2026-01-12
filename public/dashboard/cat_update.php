@@ -6,29 +6,26 @@
 
     if($_POST){
         require("../../conn.php");
-        if($_POST["posttype"] == "Update"){
+        if($_POST["posttype"] == "Cat_Update"){
             echo "Updated";
 
-            $sql = "UPDATE project SET name = ?, info = ?, url = ? WHERE project_id = ?";
+            $sql = "UPDATE categories SET name = ? WHERE cat_id = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssi", $_POST["update_name"], $_POST["update_info"], $_POST["update_url"], $_POST["update_id"]);
+            $stmt->bind_param("si", $_POST["update_name"], $_POST["update_id"]);
             $stmt->execute(); /* Lägg även till ett till s vid bind params och en ? vid VALUES när du lägger till thumbnail*/
             $stmt->close();
         } 
     }
 
 
-    $sql = "SELECT * FROM project WHERE project_id=" . $_GET["id"];
+    $sql = "SELECT * FROM categories WHERE cat_id=" . $_GET["id"];
     $result = $conn->query($sql);
     if($result->num_rows > 0){
         while($row = $result->fetch_assoc()){ ?>
         <form method="post" enctype="multipart/form-data">
-            <input type="text" name="update_id" placeholder="name" value="<?php echo $row["project_id"];?>" hidden>
+            <input type="text" name="update_id" placeholder="name" value="<?php echo $row["cat_id"];?>" hidden>
             <input type="text" name="update_name" placeholder="name" value="<?php echo $row["name"];?>">
-            <textarea type="text" name="update_info" placeholder="info"><?php echo $row["info"];?></textarea>
-            <input type="file" name="update_fileToUpload" id="fileToUpload">
-            <input type="text" name="update_url" placeholder="external url" value="<?php echo $row["url"];?>">
-            <input class="btn btn-primary" type="submit" name="posttype" value="Update">
+            <input class="btn btn-primary" type="submit" name="posttype" value="Cat_Update">
         </form>
         <?php
         }
