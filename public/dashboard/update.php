@@ -12,7 +12,7 @@
             $sql = "UPDATE project SET name = ?, info = ?, url = ? WHERE project_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sssi", $_POST["update_name"], $_POST["update_info"], $_POST["update_url"], $_POST["update_id"]);
-            $stmt->execute(); /* Lägg även till ett till s vid bind params och en ? vid VALUES när du lägger till thumbnail*/
+            $stmt->execute();
             $stmt->close();
         } 
     }

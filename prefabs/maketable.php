@@ -11,7 +11,7 @@
 
     $sql = "CREATE TABLE IF NOT EXISTS images (
         image_id INT AUTO_INCREMENT PRIMARY KEY,
-        project_id INT,
+        project_id INT NOT NULL,
         url VARCHAR(100)
     )";
 
